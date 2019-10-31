@@ -143,7 +143,9 @@ func (r *routes) randomNeighbours(except PeerName) []PeerName {
 	destinations := make(peerNameSet)
 	r.RLock()
 	defer r.RUnlock()
-	count := int(math.Log2(float64(len(r.unicastAll))))
+	// Add 2 to the target to increase the coverage in sparsely-connected nodes
+	// - does not materially affect the outcome in larger networks
+	count := int(math.Log2(float64(len(r.unicastAll)))) + 2
 	// depends on go's random map iteration
 	for _, dst := range r.unicastAll {
 		if dst != UnknownPeerName && dst != except {
